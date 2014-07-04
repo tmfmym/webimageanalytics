@@ -137,22 +137,35 @@
   ];
 
   /**
-   * @param pixels ImageData.data
+   * @param ImageData imgData
    */
-  imageScale.analyze = function(pixels) {
-    var i, length, r, g, b, hsv;
+  imageScale.analyze = function(imgData) {
+    var i, r, g, b, hsv, imgScaleType,
+        pixels = imgData.data,
+        length = pixels.length,
+        data = new Uint8Array(length / 4);
+        
     /** Hue&Toneの各々の出現頻度 */
-    this.data = Array.apply(null, new Array(imageScale.IMAGE_SCALE_SIZE)).map(Number.prototype.valueOf, 0);
-    this.length = 0;
+    this.countTable = Array.apply(null, new Array(imageScale.IMAGE_SCALE_SIZE)).map(Number.prototype.valueOf, 0);
 
-    for (i = 0, length = pixels.length; i < length; i += 4) {
+    for (i = 0; i < length; i += 4) {
       r = pixels[i];
       g = pixels[i + 1];
       b = pixels[i + 2];
+
       hsv = this.rgb2Hsv(r, g, b);
-      count(this.getImageScaleType(hsv));
+      imgScaleType = this.getImageScaleType(hsv);
+      count(imgScaleType);
+      data[i / 4] = imgScaleType;
     }
-    return {length: this.length, data: this.data};
+    
+    return {
+      data: data,
+      countTable: this.countTable,
+      length: length / 4,
+      height: imgData.height,
+      width: imgData.width
+    };
   };
 
   /**
@@ -183,6 +196,8 @@
 
   /** 
    * HSVの色からイメージスケールのHue&Tone番号を取得
+   *
+   + @param Array hsv
    *
    * TODO: 130個全部をチェックしてる・・・
    */
@@ -220,8 +235,7 @@
   }
 
   function count(imageScaleType) {
-    imageScale.data[imageScaleType] += 1;
-    imageScale.length += 1;
+    imageScale.countTable[imageScaleType] += 1;
   }
 
   this.imageScale = imageScale;

@@ -1,6 +1,6 @@
 window.onload = function() {
   document.getElementById('file').addEventListener('change', function(e) {
-    var fileName = e.target.files[0],
+    var file = e.target.files[0],
         canvas = document.getElementById('image'),
         context = canvas.getContext('2d'),
         image = new Image(),
@@ -12,12 +12,12 @@ window.onload = function() {
         canvas.height = image.height;
         context.drawImage(image, 0, 0);
         var pixels = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
-        var result = imageScale.analyze(pixels.data);
+        var result = imageScale.analyze(pixels);
         hueToneChart.render(result);
-        csv.createFile(result.data).createLink("#download");
+        csv.createFile(result).createLink("#download", file.name);
       };
       image.src = evt.target.result;
     };
-    reader.readAsDataURL(fileName);
+    reader.readAsDataURL(file);
   }, false);
 };

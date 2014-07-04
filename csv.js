@@ -5,9 +5,11 @@
   csv.hue = hueToneChart.hue.slice(1, -2);
   csv.tone = hueToneChart.tone;
   csv.neutral = hueToneChart.neutral;
+  csv.separator = "\r\n";
 
-  csv.createFile = function(data) {
-    this.file = createHedder() + "\r\n" + data.join(",");
+  csv.createFile = function(result) {
+    this.content = createHedder() + csv.separator + result.countTable.join(",");
+    this.content += csv.separator + csv.separator + createMatrix(result);
     return this;
   };
 
@@ -25,14 +27,39 @@
     return text + csv.neutral.join(",");
   }
 
-  csv.createLink =  function(selector) {
+  function createMatrix(result) {
+    var i, start, end,
+        text = "",
+        data = result.data,
+        width = result.width,
+        height = result.height;
+
+    for (i = 0; i < height; i++) {
+      start = width * i;
+      end =  width * (i + 1);
+      text += join(data.subarray(start, end), ",") + csv.separator;
+    }
+    return text;
+  }
+
+  function join(array, separator) {
+    var i,
+        len = array.length,
+        text = array[0];
+
+    for (i = 1; i < len; i++) {
+      text += separator + array[i];
+    }
+    return text;
+  }
+
+  csv.createLink =  function(selector, fileName) {
     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]),
-        blob = new Blob([bom, this.file], { type: 'text/csv' }),
+        blob = new Blob([bom, this.content], {type: "text/csv"}),
         url = (window.URL || window.webkitURL).createObjectURL(blob),
-        fileName = "download.csv",
         link = $('<a href="#">CSV</a>');
 
-        link.attr({'download': fileName, 'href': url});
+        link.attr({download: fileName + ".csv", href: url});
         $(selector).empty().append(link);
   };
 
