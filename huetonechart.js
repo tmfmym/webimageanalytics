@@ -142,7 +142,7 @@
 
   hueToneChart.render = function(result) {
     var i, j, index, value, td,
-        data = result.data,
+        data = result.countTable,
         length = result.length,
         table = $("<table>");
 
@@ -160,8 +160,7 @@
 
             if (j === 10) tr.append($("<td>").text(this.neutral[i]));
             td =$("<td>").text(value).css("background", this.rgb2ColorCode(hueToneChart.RGB_TABLE[index]));
-            // 黒塗りになるからテキスト白に
-            if (index === 129) td.css("color", "white");
+            if (index === 129) td.css("color", "white"); // 黒塗りになるからテキスト白に
             tr.append(td);
         }
         table.append(tr);
@@ -171,9 +170,7 @@
 
   function createHedder() {
     tr = $("<tr>");
-    $.each(hueToneChart.hue, function(i, v) {
-        tr.append($("<td>").text(v));
-    });
+    $.each(hueToneChart.hue, function(i, v) { tr.append($("<td>").text(v)); });
     return tr;
   }
 
