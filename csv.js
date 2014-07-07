@@ -2,9 +2,9 @@
 (function() {
   var csv = {};
 
-  csv.hue = hueToneChart.hue.slice(1, -2);
-  csv.tone = hueToneChart.tone;
-  csv.neutral = hueToneChart.neutral;
+  csv.hue = ColorSystem.HUE_LIST.slice(1, -2);
+  csv.tone = ColorSystem.TONE_LIST.slice();
+  csv.neutral = ColorSystem.NEUTRAL_LIST.slice();
   csv.separator = "\r\n";
 
   csv.createFile = function(result) {
