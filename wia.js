@@ -10,8 +10,10 @@ window.onload = function() {
       image.onload = function() {
         canvas.width = image.width;
         canvas.height = image.height;
+
         context.drawImage(image, 0, 0);
         var pixels = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
+        
         var result = imageScale.analyze(pixels);
         hueToneChart.render(result);
         csv.createFile(result).createLink("#download", file.name);
